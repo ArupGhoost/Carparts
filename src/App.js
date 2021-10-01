@@ -1,24 +1,46 @@
-import logo from './logo.svg';
+import React , { useState, useEffect } from 'react';
+import { Route, Switch } from 'react-router-dom';
+import About from './About';
 import './App.css';
+import Body from './Body';
+import Contact from './Contact';
+import Dropdown from './Dropdown';
+import Main from './Main';
+import Navbar from './Navbar';
 
 function App() {
+    
+  const[isOpen, setisOpen] = useState(false);
+
+  const toggle = () => {
+    setisOpen(!isOpen);
+  }
+
+ useEffect(() => {
+     const menuHide = () => {
+         if(window.innerWidth > 768 && isOpen){
+           setisOpen(false)
+         }
+     }
+     window.addEventListener('resize', menuHide);
+     return ()=> { 
+       window.removeEventListener('resize', menuHide)
+     };
+ }, [isOpen]);
+ 
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar toggle={toggle}/> 
+      <Dropdown isOpen={isOpen} toggle={toggle}/>
+      <Switch >
+       <Route path='/' exact component={Main}/>
+        <Route path='/body' component={Body}/>
+        <Route path='/about' component={About} />
+        <Route path='/contact' component={Contact} />
+      </Switch>
+      
+    </>
   );
 }
 
